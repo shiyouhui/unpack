@@ -3,17 +3,19 @@ ROOT=$PWD
 SIMG2IMG=$ROOT/tool/simg2img
 UNPACK=$ROOT/tool/unpack.pl
 
-if [ -d "out/userdata.img.ext4" ]; then  
-	sudo umount out/data/
-	rm -rf out/data;
-	mkdir out/data; 
+if [ -e "$ROOT"/out/userdata.img.ext4 ]; then  
+	sudo umount $ROOT/out/data/
+	rm -rf $ROOT/out/data/
+	rm "$ROOT"/out/userdata.img.ext4
+	mkdir $ROOT/out/data/
 fi
 
 	
-if [ -d "out/system.img.ext4" ]; then 
-	sudo umount out/system/
-	rm -rf out/system;
-	mkdir out/system;
+if [ -e "$ROOT"/out/system.img.ext4 ]; then 
+	sudo umount $ROOT/out/system/
+	rm -rf $ROOT/out/system/
+	rm "$ROOT"/out/system.img.ext4
+	mkdir $ROOT/out/system/
 fi
 
 rm out/* -rf

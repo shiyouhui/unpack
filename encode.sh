@@ -13,6 +13,7 @@ if [ -e $ROOT/out/system.img.ext4 ];then
 	SYSTEMSIZE_1=`ls -al $ROOT/out/system.img.ext4 | awk '{print $5}'`
 	$MAKE_EXT4FS -s -T -1 -S $FILE_CONTEXTS -l $SYSTEMSIZE_1 -a system $ROOT/out/system.img $ROOT/out/system/
 	sudo umount $ROOT/out/system/
+	echo sudo umount $ROOT/out/system/
 	rm $ROOT/out/system.img.ext4 -f 
 fi
 
