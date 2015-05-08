@@ -1,6 +1,5 @@
 #!/bin/bash
 USER=`whoami`
-echo $USER
 if [ $USER != "root" ];then
 	echo Example: sudo ./decode.sh
 	exit
