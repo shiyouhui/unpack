@@ -22,7 +22,7 @@ if [ -e $ROOT/out/userdata.img.ext4 ];then
 	echo "userdata.img size is $USERDATASIZE"
 	USERDATASIZE_1=`ls -al $ROOT/out/userdata.img.ext4 | awk '{print $5}'`
 	$MAKE_EXT4FS -s -T -1 -S $FILE_CONTEXTS -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
-	sudo fuser -km $ROOT/out/system/
+	sudo fuser -km $ROOT/out/data/
 	sudo umount $ROOT/out/data/
 	rm $ROOT/out/userdata.img.ext4 -f 
 fi
