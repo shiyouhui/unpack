@@ -42,7 +42,9 @@ set_mod()
 	for file in `awk -F" " '{print $1}' list.txt`
 	do
 		 MOD=`grep "$file " list.txt | awk -F" " '{print $2}'`
-		 chmod $MOD $file
+		 if [ -e "$file" ];then
+			chmod $MOD $file
+		 fi
 	done
 }
 
