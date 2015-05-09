@@ -8,6 +8,7 @@ fi
 ROOT=$PWD
 BMP2RAW=$ROOT/tool/bmp_to_raw
 MAKE_EXT4FS=$ROOT/tool/make_ext4fs
+MAKE_EXT4FS_OLD=$ROOT/tool/make_ext4fs_old
 SIMG2IMG=$ROOT/tool/simg2img
 REPACK=$ROOT/tool/repack.pl
 MKBOOTIMG=$ROOT/tool/mkbootimg
@@ -15,22 +16,22 @@ if [ -e $ROOT/out/system.img.ext4 ];then
 	PLATFORM=`awk -F"=" '{if(/^ro.mediatek.platform/)print $2}' $ROOT/out/system/build.prop`
 	RELEASE=`awk -F"=" '{if(/^ro.build.version.release/)print $2}' $ROOT/out/system/build.prop`
 	OLD_RELEASE=(4.2.2 4.4.2 4.1.2 4.4.4)
-	if [ "$PLATFORM" = "mt6582" ];then
-		if [ "RELEASE" = "5.0" ];then
+	if [ "$PLATFORM" = "MT6582" ];then
+		if [ "$RELEASE" = "5.0" ];then
 			FILE_CONTEXTS=$ROOT/root/lo82/file_contexts
 		fi
-	elif [  "$PLATFORM" = "mt6752" ];then
-		if [ "RELEASE" = "5.0" ];then
+	elif [  "$PLATFORM" = "MT6752" ];then
+		if [ "$RELEASE" = "5.0" ];then
 			FILE_CONTEXTS=$ROOT/root/lo52/file_contexts
 		fi
-	elif [  "$PLATFORM" = "mt8127" ];then
-		if [ "RELEASE" = "5.0" ];then
+	elif [  "$PLATFORM" = "MT8127" ];then
+		if [ "$RELEASE" = "5.0" ];then
 			FILE_CONTEXTS=$ROOT/root/lo27/file_contexts
 		fi
-	elif [  "$PLATFORM" = "mt6735" ];then
-		if [ "RELEASE" = "5.0" ];then
+	elif [  "$PLATFORM" = "MT6735" ];then
+		if [ "$RELEASE" = "5.0" ];then
 			FILE_CONTEXTS=$ROOT/root/lo35/file_contexts
-		elif [ "RELEASE" = "5.1" ];then
+		elif [ "$RELEASE" = "5.1" ];then
 			FILE_CONTEXTS=$ROOT/root/lo35m/file_contexts
 		fi
 	fi
@@ -40,9 +41,11 @@ set_mod()
 {
 	for file in `awk -F" " '{print $1}' list.txt`
 	do
-		 MOD=`grep "$file " list.txt | awk -F" " '{print $2}'`
+		 MOD=`grep -F "$file " list.txt | awk -F" " '{print $2}'`
 		 if [ -e "$file" ];then
-			chmod $MOD $file
+			if [ ! -z "$file" ];then
+				chmod $MOD $file
+			fi
 		 fi
 	done
 }
@@ -50,11 +53,11 @@ set_mod()
 set_mod
 
 if [ -e $ROOT/out/system.img.ext4 ];then
-	SYSTEMSIZE=`ls -alh $ROOT/out/system.img.ext4 | awk '{print $5}'`
 	SYSTEMSIZE_1=`ls -al $ROOT/out/system.img.ext4 | awk '{print $5}'`
 	echo ${OLD_RELEASE[@]} | grep -wq "$RELEASE"
+	
 	if [ $? = 0 ];then
-		$MAKE_EXT4FS -s -T -1 -l $SYSTEMSIZE_1 -a system $ROOT/out/system.img $ROOT/out/system/
+		$MAKE_EXT4FS_OLD -s -l $SYSTEMSIZE_1 -a system $ROOT/out/system.img $ROOT/out/system/
 	else
 		$MAKE_EXT4FS -s -T -1 -S $FILE_CONTEXTS -l $SYSTEMSIZE_1 -a system $ROOT/out/system.img $ROOT/out/system/
 	fi
@@ -64,10 +67,10 @@ if [ -e $ROOT/out/system.img.ext4 ];then
 fi
 
 if [ -e $ROOT/out/userdata.img.ext4 ];then
-	USERDATASIZE=`ls -alh $ROOT/out/userdata.img.ext4 | awk '{print $5}'`
 	USERDATASIZE_1=`ls -al $ROOT/out/userdata.img.ext4 | awk '{print $5}'`
+	echo ${OLD_RELEASE[@]} | grep -wq "$RELEASE"
 	if [ $? = 0 ];then
-		$MAKE_EXT4FS -s -T -1 -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
+		$MAKE_EXT4FS_OLD -s -T -1 -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
 	else
 		$MAKE_EXT4FS -s -T -1 -S $FILE_CONTEXTS -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
 	fi
