@@ -1,7 +1,7 @@
 #!/bin/bash
 USER=`whoami`
 if [ $USER != "root" ];then
-	echo Example: sudo ./decode.sh
+	echo Example: sudo ./encode.sh
 	exit
 fi
 
@@ -49,8 +49,9 @@ set_mod()
 		 fi
 	done
 }
-
-set_mod
+if [ -e $ROOT/out/system.img.ext4 -o -e $ROOT/out/userdata.img.ext4 ];then
+	set_mod
+fi
 
 if [ -e $ROOT/out/system.img.ext4 ];then
 	SYSTEMSIZE_1=`ls -al $ROOT/out/system.img.ext4 | awk '{print $5}'`

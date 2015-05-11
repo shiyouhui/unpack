@@ -21,7 +21,7 @@ my $dir = getcwd;
 my $version = "MTK-Tools by Bruno Martins\nMT65xx repack script (last update: 29-11-2012)\n";
 my $usage = "repack-MT65xx.pl COMMAND [...]\n\nCOMMANDs are:\n\n  -boot <kernel> <ramdisk-directory> <outfile>\n    Repacks boot image\n\n  -recovery <kernel> <ramdisk-directory> <outfile>\n    Repacks recovery image\n\n  -logo <logo-directory> <outfile>\n    Repacks logo image\n\n";
 
-print "$version";
+#print "$version";
 die "\nUsage: $usage" unless $ARGV[0] && $ARGV[1] && $ARGV[2];
 
 if ( $ARGV[0] eq "-boot" ) {
