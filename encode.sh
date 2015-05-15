@@ -71,7 +71,7 @@ if [ -e $ROOT/out/userdata.img.ext4 ];then
 	USERDATASIZE_1=`ls -al $ROOT/out/userdata.img.ext4 | awk '{print $5}'`
 	echo ${OLD_RELEASE[@]} | grep -wq "$RELEASE"
 	if [ $? = 0 ];then
-		$MAKE_EXT4FS_OLD -s -T -1 -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
+		$MAKE_EXT4FS_OLD -s -1 -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
 	else
 		$MAKE_EXT4FS -s -T -1 -S $FILE_CONTEXTS -l $USERDATASIZE_1 -a system $ROOT/out/userdata.img $ROOT/out/data/
 	fi
