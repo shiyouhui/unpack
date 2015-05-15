@@ -88,20 +88,20 @@ if [ -e $ROOT/out/logo ];then
 	if [ -e  $ROOT/pic/uboot.bmp ];then
 		convert $ROOT/pic/uboot.bmp $ROOT/pic/uboot.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_00.raw | awk '{print $5}'`
-		$BMP2RAW "$ROOT"/out/logo/logo_00.raw "$ROOT"/pic/uboot.bmp  1
+		$BMP2RAW $ROOT/out/logo/logo_00.raw $ROOT/pic/uboot.bmp  1
 		OUTSIZE=`ls -al $ROOT/out/logo/logo_00.raw | awk '{print $5}'`
 		if [ SIZE !=  OUTSIZE ];then
-			$BMP2RAW "$ROOT"/out/logo/logo_00.raw "$ROOT"/pic/uboot.bmp  2
+			$BMP2RAW $ROOT/out/logo/logo_00.raw $ROOT/pic/uboot.bmp  2
 		fi
 	fi
 	
 	if [ -e  $ROOT/pic/kernel.bmp ];then
 		convert $ROOT/pic/uboot.bmp $ROOT/pic/kernel.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
-		$BMP2RAW "$ROOT"/out/logo/logo_38.raw "$ROOT"/pic/kernel.bmp  1
+		$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  1
 		OUTSIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
 		if [ SIZE !=  OUTSIZE ];then
-			$BMP2RAW "$ROOT"/out/logo/logo_38.raw "$ROOT"/pic/kernel.bmp  2
+			$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  2
 		fi
 	fi
 

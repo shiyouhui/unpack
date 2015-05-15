@@ -75,27 +75,27 @@ if [ -e $ROOT/list.txt ];then
 	rm  $ROOT/list.txt
 fi
 
-DATE_MOUNTED=`mount | grep "/out/data"`
+DATE_MOUNTED=`mount | grep "$ROOT/out/data"`
 if [ ! -z "$DATE_MOUNTED" ];then
 	umount $ROOT/out/data/
 fi
 
-SYSTEM_MOUNTED=`mount | grep "/out/system"`
+SYSTEM_MOUNTED=`mount | grep "$ROOT/out/system"`
 if [ ! -z "$SYSTEM_MOUNTED" ];then
 	umount $ROOT/out/system/
 fi
 
-if [ -e "$ROOT"/out/userdata.img.ext4 ];then
-	rm "$ROOT"/out/userdata.img.ext4
+if [ -e "$ROOT/out/userdata.img.ext4" ];then
+	rm $ROOT/out/userdata.img.ext4
 fi
 
-if [ -e "$ROOT"/out/userdata.img.ext4 ];then
-	rm "$ROOT"/out/userdata.img.ext4
+if [ -e "$ROOT/out/userdata.img.ext4" ];then
+	rm $ROOT/out/userdata.img.ext4
 fi
 
-rm out/* -rf
+rm $ROOT/out/* -rf
 
-if [ -e  $ROOT/img/boot.img ];then
+if [ -e  "$ROOT/img/boot.img" ];then
 	mkdir $ROOT/out/boot
 	$UNPACK $ROOT/img/boot.img $ROOT/out
 	echo "unpack boot.img >>>>>> OK"
@@ -103,7 +103,7 @@ else
 	echo ">>>>>>Skip unpack boot.img"
 fi
 
-if [ -e  $ROOT/img/logo.bin ];then
+if [ -e  "$ROOT/img/logo.bin" ];then
 	mkdir $ROOT/out/logo
 	$UNPACK $ROOT/img/logo.bin $ROOT/out
 	echo "unpack logo.bin >>>>>> OK"
@@ -111,10 +111,10 @@ else
 	echo ">>>>>>Skip unpack logo.bin"
 fi
 
-if [ -e  img/userdata.img ];then
+if [ -e "$ROOT/img/userdata.img" ];then
 	mkdir  $ROOT/out/data
-	$SIMG2IMG img/userdata.img out/userdata.img.ext4
-	mount -t ext4 -o loop out/userdata.img.ext4 out/data/
+	$SIMG2IMG $ROOT/img/userdata.img $ROOT/out/userdata.img.ext4
+	mount -t ext4 -o loop $ROOT/out/userdata.img.ext4 $ROOT/out/data/
 	list $ROOT/out/data
 	chmod 777 $ROOT/out/data/ -R
 	echo "unpack userdata.img >>>>>> OK"
@@ -122,10 +122,10 @@ else
 	echo ">>>>>>Skip unpack userdata.img"
 fi
 
-if [ -e  img/system.img ];then
+if [ -e "$ROOT/img/system.img" ];then
 	mkdir $ROOT/out/system
-	$SIMG2IMG img/system.img out/system.img.ext4
-	mount -t ext4 -o loop out/system.img.ext4 out/system/
+	$SIMG2IMG $ROOT/img/system.img $ROOT/out/system.img.ext4
+	mount -t ext4 -o loop $ROOT/out/system.img.ext4 $ROOT/out/system/
 	list $ROOT/out/system
 	chmod 777 $ROOT/out/system/ -R
 	echo "unpack system.img >>>>>> OK"
