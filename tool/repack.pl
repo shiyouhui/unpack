@@ -74,8 +74,11 @@ sub repack_boot {
 	if ( $^O eq "cygwin" ) {
 		system ("./tool/mkbootimg.exe --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
 	} else {
-		system("pwd");
-		system ("./tool/mkbootimg --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
+		if ( -e "$ramdiskdir/selinux_version" ) {
+			system ("./tool/mkbootimg --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz  --base 0x80000000 --ramdisk_offset 0x04000000 --kernel_offset 0x00008000 --tags_offset 0x00000100  --output $outfile");
+		}else{
+			system ("./tool/mkbootimg --kernel $kernel --ramdisk new-ramdisk-repack.cpio.gz -o $outfile");
+		}
 	}
 
 	# cleanup
