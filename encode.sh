@@ -13,10 +13,14 @@ SIMG2IMG=$ROOT/tool/simg2img
 REPACK=$ROOT/tool/repack.pl
 MKBOOTIMG=$ROOT/tool/mkbootimg
 FILE_CONTEXTS=$ROOT/out/boot/boot-ramdisk/file_contexts
+OLD_LOGO=0
 if [ -e $ROOT/out/system.img.ext4 ];then
 	PLATFORM=`awk -F"=" '{if(/^ro.mediatek.platform/)print $2}' $ROOT/out/system/build.prop`
 	RELEASE=`awk -F"=" '{if(/^ro.build.version.release/)print $2}' $ROOT/out/system/build.prop`
 	OLD_RELEASE=(4.2.2 4.4.2 4.1.2 4.4.4)
+	if [ $RELEASE = "4.2.2" ];then
+		$OLD_LOGO=1
+	fi
 	if [ ! -e $FILE_CONTEXTS ];then
 		if [ "$PLATFORM" = "MT6582" ];then
 			if [ "$RELEASE" = "5.0" ];then
@@ -40,7 +44,6 @@ if [ -e $ROOT/out/system.img.ext4 ];then
 	fi
 fi
 
-echo $FILE_CONTEXTS
 set_mod()
 {
 	for file in `awk -F" " '{print $1}' list.txt`
@@ -69,6 +72,7 @@ if [ -e $ROOT/out/system.img.ext4 ];then
 	fuser -km $ROOT/out/system/
 	umount $ROOT/out/system/
 	rm $ROOT/out/system.img.ext4 -f
+	echo "repack system.img >>>>>> OK"
 fi
 
 if [ -e $ROOT/out/userdata.img.ext4 ];then
@@ -82,10 +86,12 @@ if [ -e $ROOT/out/userdata.img.ext4 ];then
 	fuser -km $ROOT/out/data/
 	umount $ROOT/out/data/
 	rm $ROOT/out/userdata.img.ext4 -f 
+	echo "repack userdata.img >>>>>> OK"
 fi
 
 if [ -e $ROOT/out/boot ];then
 	$REPACK -boot $ROOT/out/boot/boot-kernel.img $ROOT/out/boot/boot-ramdisk $ROOT/out/boot.img
+	echo "repack boot.img >>>>>> OK"
 fi
 
 if [ -e $ROOT/out/logo ];then
@@ -103,7 +109,7 @@ if [ -e $ROOT/out/logo ];then
 		convert $ROOT/pic/kernel.bmp $ROOT/pic/kernel.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
 		$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  1
-		if [ $RELEASE = "4.2.2" ];then
+		if [ $OLD_LOGO = 1 ];then
 			cp $ROOT/out/logo/logo_38.raw $ROOT/out/system/media/boot_logo
 		fi
 		OUTSIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
@@ -114,6 +120,7 @@ if [ -e $ROOT/out/logo ];then
 
 	$REPACK -logo $ROOT/out/logo $ROOT/out/logo.bin
 	rm $ROOT/out/logo -rf
+	echo "repack logo.bin >>>>>> OK"
 fi
 
 
