@@ -100,7 +100,7 @@ if [ -e $ROOT/out/logo ];then
 	fi
 	
 	if [ -e  $ROOT/pic/kernel.bmp ];then
-		convert $ROOT/pic/uboot.bmp $ROOT/pic/kernel.bmp
+		convert $ROOT/pic/kernel.bmp $ROOT/pic/kernel.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
 		$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  1
 		if [ $RELEASE = "4.2.2" ];then
