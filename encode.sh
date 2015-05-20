@@ -12,31 +12,35 @@ MAKE_EXT4FS_OLD=$ROOT/tool/make_ext4fs_old
 SIMG2IMG=$ROOT/tool/simg2img
 REPACK=$ROOT/tool/repack.pl
 MKBOOTIMG=$ROOT/tool/mkbootimg
+FILE_CONTEXTS=$ROOT/out/boot/boot-ramdisk/file_contexts
 if [ -e $ROOT/out/system.img.ext4 ];then
 	PLATFORM=`awk -F"=" '{if(/^ro.mediatek.platform/)print $2}' $ROOT/out/system/build.prop`
 	RELEASE=`awk -F"=" '{if(/^ro.build.version.release/)print $2}' $ROOT/out/system/build.prop`
 	OLD_RELEASE=(4.2.2 4.4.2 4.1.2 4.4.4)
-	if [ "$PLATFORM" = "MT6582" ];then
-		if [ "$RELEASE" = "5.0" ];then
-			FILE_CONTEXTS=$ROOT/root/lo82/file_contexts
-		fi
-	elif [  "$PLATFORM" = "MT6752" ];then
-		if [ "$RELEASE" = "5.0" ];then
-			FILE_CONTEXTS=$ROOT/root/lo52/file_contexts
-		fi
-	elif [  "$PLATFORM" = "MT8127" ];then
-		if [ "$RELEASE" = "5.0" ];then
-			FILE_CONTEXTS=$ROOT/root/lo27/file_contexts
-		fi
-	elif [  "$PLATFORM" = "MT6735" ];then
-		if [ "$RELEASE" = "5.0" ];then
-			FILE_CONTEXTS=$ROOT/root/lo35/file_contexts
-		elif [ "$RELEASE" = "5.1" ];then
-			FILE_CONTEXTS=$ROOT/root/lo35m/file_contexts
+	if [ ! -e $FILE_CONTEXTS ];then
+		if [ "$PLATFORM" = "MT6582" ];then
+			if [ "$RELEASE" = "5.0" ];then
+				FILE_CONTEXTS=$ROOT/root/lo82/file_contexts
+			fi
+		elif [  "$PLATFORM" = "MT6752" ];then
+			if [ "$RELEASE" = "5.0" ];then
+				FILE_CONTEXTS=$ROOT/root/lo52/file_contexts
+			fi
+		elif [  "$PLATFORM" = "MT8127" ];then
+			if [ "$RELEASE" = "5.0" ];then
+				FILE_CONTEXTS=$ROOT/root/lo27/file_contexts
+			fi
+		elif [  "$PLATFORM" = "MT6735" ];then
+			if [ "$RELEASE" = "5.0" ];then
+				FILE_CONTEXTS=$ROOT/root/lo35/file_contexts
+			elif [ "$RELEASE" = "5.1" ];then
+				$FILE_CONTEXTS=$ROOT/root/lo35m/file_contexts
+			fi
 		fi
 	fi
 fi
 
+echo $FILE_CONTEXTS
 set_mod()
 {
 	for file in `awk -F" " '{print $1}' list.txt`
@@ -99,6 +103,9 @@ if [ -e $ROOT/out/logo ];then
 		convert $ROOT/pic/uboot.bmp $ROOT/pic/kernel.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
 		$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  1
+		if [ $RELEASE = "4.2.2" ];then
+			cp $ROOT/out/logo/logo_38.raw $ROOT/out/system/media/boot_logo
+		fi
 		OUTSIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
 		if [ SIZE !=  OUTSIZE ];then
 			$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  2
