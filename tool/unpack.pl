@@ -68,6 +68,54 @@ sub unpack_boot {
 	$ram1 = substr($ram1, 512);
 
 	if (substr($ram1, 0, 2) ne "\x1F\x8B") {
+		unpack_boot_64($input);
+		return
+	}
+
+	open (RAMDISKFILE, ">$outputdir/boot/boot-ramdisk.cpio.gz");
+	binmode(RAMDISKFILE);
+	print RAMDISKFILE $ram1 or die;
+	close RAMDISKFILE;
+
+	#print"Ramdisk written to boot-ramdisk.cpio.gz\n";
+
+	if (-e "$outputdir/boot/boot-ramdisk") {
+		rmtree "$outputdir/boot/boot-ramdisk";
+		#print "Removed old ramdisk directory boot-ramdisk\n";
+	}
+
+	mkdir "$outputdir/boot/boot-ramdisk" or die;
+	chdir "$outputdir/boot/boot-ramdisk" or die;
+	die "\nError: cpio not found!\n" unless ( -e "/usr/bin/cpio") || ( -e "/usr/local/bin/cpio") || ( -e "/bin/cpio") ; 
+	#print "Ramdisk size: ";
+	system ("gzip -d -c $outputdir/boot/boot-ramdisk.cpio.gz | cpio -i");
+
+	#print "Extracted ramdisk contents to directory boot-ramdisk\n";
+	#print "\nSuccessfully unpacked kernel and ramdisk.\n";
+}
+
+sub unpack_boot_64 {
+    my $bootimg = $_[0];
+	my($bootMagic, $kernelSize, $kernelLoadAddr, $ram1Size, $ram1LoadAddr, $ram2Size, $ram2LoadAddr, $tagsAddr, $pageSize, $unused1, $unused2, $bootName, $cmdLine, $id) = unpack('a8 L L L L L L L L L L a16 a512 a8', $bootimg);
+	
+	if( ($kernelSize % $pageSize) != 0 ){
+		$kernelSize = (int($kernelSize/$pageSize) +1 )* $pageSize;
+	}
+	
+	my($kernel) = substr($bootimg, $pageSize, $kernelSize);
+
+	open (KERNELFILE, ">$outputdir/boot/boot-kernel.img");
+	binmode(KERNELFILE);
+	print KERNELFILE $kernel or die;
+	close KERNELFILE;
+
+	#print "\nKernel written to boot-kernel.img\n";
+
+	my($ram1Addr) = int($kernelSize + $pageSize);
+
+	my($ram1) = substr($bootimg, $ram1Addr, $ram1Size);
+
+	if (substr($ram1, 0, 2) ne "\x1F\x8B") {
 		die "\nError: the boot image does not appear to contain a valid gzip file";
 	}
 
