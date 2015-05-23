@@ -7,6 +7,7 @@ fi
 
 ROOT=$PWD
 BMP2RAW=$ROOT/tool/bmp_to_raw
+BMP2RAW_NEW=$ROOT/tool/bmp_to_raw_new
 MAKE_EXT4FS=$ROOT/tool/make_ext4fs
 MAKE_EXT4FS_OLD=$ROOT/tool/make_ext4fs_old
 SIMG2IMG=$ROOT/tool/simg2img
@@ -98,23 +99,23 @@ if [ -e $ROOT/out/logo ];then
 	if [ -e  $ROOT/pic/uboot.bmp ];then
 		convert $ROOT/pic/uboot.bmp $ROOT/pic/uboot.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_00.raw | awk '{print $5}'`
-		$BMP2RAW $ROOT/out/logo/logo_00.raw $ROOT/pic/uboot.bmp  1
+		$BMP2RAW $ROOT/out/logo/logo_00.raw $ROOT/pic/uboot.bmp
 		OUTSIZE=`ls -al $ROOT/out/logo/logo_00.raw | awk '{print $5}'`
 		if [ SIZE !=  OUTSIZE ];then
-			$BMP2RAW $ROOT/out/logo/logo_00.raw $ROOT/pic/uboot.bmp  2
+			$BMP2RAW_NEW $ROOT/out/logo/logo_00.raw $ROOT/pic/uboot.bmp
 		fi
 	fi
 	
 	if [ -e  $ROOT/pic/kernel.bmp ];then
 		convert $ROOT/pic/kernel.bmp $ROOT/pic/kernel.bmp
 		SIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
-		$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  1
+		$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp
 		if [ $OLD_LOGO = 1 ];then
 			cp $ROOT/out/logo/logo_38.raw $ROOT/out/system/media/boot_logo
 		fi
 		OUTSIZE=`ls -al $ROOT/out/logo/logo_38.raw | awk '{print $5}'`
 		if [ SIZE !=  OUTSIZE ];then
-			$BMP2RAW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp  2
+			$BMP2RAW_NEW $ROOT/out/logo/logo_38.raw $ROOT/pic/kernel.bmp
 		fi
 	fi
 
