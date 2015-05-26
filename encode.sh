@@ -47,6 +47,7 @@ fi
 
 set_mod()
 {
+	IFS=$(echo -en "\n\b")
 	for file in `awk -F" " '{print $1}' list.txt`
 	do
 		 MOD=`grep -F "$file " list.txt | awk -F" " '{print $2}'`

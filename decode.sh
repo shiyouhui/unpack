@@ -54,6 +54,7 @@ Parser()
 
 list()
 {
+	IFS=$(echo -en "\n\b")
     for file in `ls $1`
     do
 		if [ -f $file ];then
